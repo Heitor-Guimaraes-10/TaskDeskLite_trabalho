@@ -34,13 +34,32 @@ public class TaskService : ITaskService
 
     public TaskItem Update(TaskItem task)
     {
-        // TODO: validar
-        // TODO: buscar existente
-        // TODO: regra: se Status Done -> não pode editar (BusinessRuleException)
-        // TODO: atualizar campos permitidos
-        // TODO: retornar atualizado
+        // Se o titulo estiver vazio ou data errada, o erro estoura aqui e para tudo
+        TaskValidator.ValidateForCreateOrUpdate(task);
 
-        throw new NotImplementedException();
+        // Buscar a tarefa existente
+        var existingTask = _tasks.FirstOrDefault(t => t.Id == task.Id);
+
+        // Se não existir, lançar NotFoundException que esta na DomainExceptions.cs
+        if (existingTask is null)
+        {
+               throw new NotFoundException($"Tarefa não encontrada (ID: {task.Id})");
+        }
+
+        // Se a tarefa estiver concluída, lançar BusinessRuleException que esta na DomainExceptions.cs
+        if (existingTask.Status == TaskStatus.Done)
+        {
+               throw new BusinessRuleException("Não é permitido alterar uma tarefa concluída.");
+        }
+
+        // Atualizar os campos permitidos
+        existingTask.Title = task.Title;
+        existingTask.Description = task.Description;
+        existingTask.Priority = task.Priority;
+        existingTask.DueDate = task.DueDate;
+
+        // Retorna a tarefa atualizada
+        return existingTask;
     }
 
     public void Delete(Guid id)
