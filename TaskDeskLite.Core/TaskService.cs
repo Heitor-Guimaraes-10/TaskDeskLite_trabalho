@@ -17,12 +17,19 @@ public class TaskService : ITaskService
 
     public TaskItem Create(TaskItem task)
     {
-        // TODO: validar
-        // TODO: garantir Id novo e Status Pending
-        // TODO: adicionar na lista
-        // TODO: retornar a tarefa criada
+        // 1. Validar os dados de entrada
+        TaskValidator.ValidateForCreateOrUpdate(task);
 
-        throw new NotImplementedException();
+        // 2. Garantir consistência (Id novo, Status inicial e Data de criação)
+        task.Id = Guid.NewGuid();
+        task.Status = TaskStatus.Pending;
+        task.CreatedAt = DateTime.Now;
+
+        // 3. Adicionar na lista em memória
+        _tasks.Add(task);
+
+        // 4. Retornar a tarefa criada
+        return task;
     }
 
     public TaskItem Update(TaskItem task)
