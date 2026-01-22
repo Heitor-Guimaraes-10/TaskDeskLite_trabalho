@@ -62,18 +62,31 @@ public class TaskService : ITaskService
         return existingTask;
     }
 
-    public void Delete(Guid id)
-    {
-        // TODO: se não existir -> NotFoundException
-        // TODO: remover
-        throw new NotImplementedException();
-    }
+   public void Delete(Guid id)
+{
+    // 1. Tentar encontrar a tarefa
+    var task = _tasks.FirstOrDefault(t => t.Id == id);
 
+    // 2. Se não existir, lançar o erro que você já tem no GetById
+    if (task is null)
+        throw new NotFoundException("Não é possível excluir: Tarefa não encontrada.");
+
+    // 3. Remover da lista
+    _tasks.Remove(task);
+}
     public TaskItem MarkAsDone(Guid id)
     {
-        // TODO: buscar existente
-        // TODO: marcar Done
-        // TODO: retornar
-        throw new NotImplementedException();
+        // 1. Buscar a tarefa existente
+        var task = _tasks.FirstOrDefault(t => t.Id == id);
+
+        // 2. Validar se existe
+        if (task is null)
+            throw new NotFoundException("Tarefa não encontrada.");
+
+        // 3. Atualizar o status
+        task.Status = TaskStatus.Done;
+
+        // 4. Retornar a tarefa atualizada
+        return task;
     }
 }
