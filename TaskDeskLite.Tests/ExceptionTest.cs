@@ -88,6 +88,23 @@ namespace TaskDeskLite.Tests
             Assert.Throws<TaskDeskLite.Core.DomainValidationException>(() => service.Create(tarefaInvalida));
 
         }
+        [Fact]
+        public void CriarTarefa_SemPrioridade()
+        {
+            // Arrange
+            var taskService = new TaskDeskLite.Core.TaskService();
+            var task = new TaskDeskLite.Core.TaskItem
+            {
+                Title = new string('A', 4),
+                Description = "Descrição de teste",
+                // Força um valor fora do intervalo do Enum para testar a validação de integridade.
+                Priority = (TaskDeskLite.Core.TaskPriority)99
+            };
+
+            // Act & Assert
+            // AJUSTADO: Agora usamos DomainValidationException, que é o nome real no seu Core
+            Assert.Throws<TaskDeskLite.Core.DomainValidationException>(() => taskService.Create(task));
+        }
 
     }
 }
