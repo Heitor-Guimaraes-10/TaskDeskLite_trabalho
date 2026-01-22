@@ -43,13 +43,13 @@ public class TaskService : ITaskService
         // Se não existir, lançar NotFoundException que esta na DomainExceptions.cs
         if (existingTask is null)
         {
-               throw new NotFoundException($"Tarefa não encontrada (ID: {task.Id})");
+            throw new NotFoundException($"Tarefa não encontrada (ID: {task.Id})");
         }
 
         // Se a tarefa estiver concluída, lançar BusinessRuleException que esta na DomainExceptions.cs
         if (existingTask.Status == TaskStatus.Done)
         {
-               throw new BusinessRuleException("Não é permitido alterar uma tarefa concluída.");
+            throw new BusinessRuleException("Não é permitido alterar uma tarefa concluída.");
         }
 
         // Atualizar os campos permitidos
@@ -62,18 +62,18 @@ public class TaskService : ITaskService
         return existingTask;
     }
 
-   public void Delete(Guid id)
-{
-    // 1. Tentar encontrar a tarefa
-    var task = _tasks.FirstOrDefault(t => t.Id == id);
+    public void Delete(Guid id)
+    {
+        // 1. Tentar encontrar a tarefa
+        var task = _tasks.FirstOrDefault(t => t.Id == id);
 
-    // 2. Se não existir, lançar o erro que você já tem no GetById
-    if (task is null)
-        throw new NotFoundException("Não é possível excluir: Tarefa não encontrada.");
+        // 2. Se não existir, lançar o erro que você já tem no GetById
+        if (task is null)
+            throw new NotFoundException("Não é possível excluir: Tarefa não encontrada.");
 
-    // 3. Remover da lista
-    _tasks.Remove(task);
-}
+        // 3. Remover da lista
+        _tasks.Remove(task);
+    }
     public TaskItem MarkAsDone(Guid id)
     {
         // 1. Buscar a tarefa existente
